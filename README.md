@@ -10,7 +10,7 @@ Currently following Estonian Banks are supported:
 - LHV
 - Swedbank
 
-in order to use this tool, you have to switch the UI language within your internet banking first to english and the export your account statement in CSV.
+in order to use this tool, you have to switch the UI language within your internet banking first to english and then export your account statement in CSV.
 
 ## Usage
 Basic usage is shown below, the output will always to to stdout()
