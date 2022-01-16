@@ -4,7 +4,7 @@ CSV=$2
 MODE=$1
 
 usage() {
-	echo "convert.sh [lhv|swedbank] input.csv"
+	echo "converter.sh [lhv|swedbank] input.csv"
 }
 
 swedbank() {
