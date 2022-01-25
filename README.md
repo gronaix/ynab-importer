@@ -17,8 +17,18 @@ Basic usage is shown below, the output will always to to stdout()
 ```
 converter.sh [lhv|swedbank] input.csv
 ```
-
 This tool is targeted for manual import of bank account statements from the above listed supported banks to the [YNAB](https://www.youneedabudget.com/) accounts using the CSV import functionality.
-There is no auto import using the YNAB API and it is purely designed to convert the bank outputs into a format, that is directly understood by YNAB
+
+
+```
+importer.sh [lhv] input.csv
+```
+This tool will read the CSV and automatically imports the transactions into the defined budget using the YNAB API.
+In order to have this tool working properly, following requirements need to fulfilled:
+- Account name in YNAB contains the matching account IBAN
+- Exported CSV from bank are in English language
+- Export only dates back to last reconciliation date of the account
+- `config.sample` is moved to `config` and filled with your personal details
+- Currently only LHV is supported for direct import
 
 **USE AT OWN RISK**
