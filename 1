@@ -1,5 +1,4 @@
 #!/bin/bash
-#set -x
 
 testCSV () {
 	if !  test -f $CSV ; then
@@ -48,12 +47,12 @@ swedbankRead () {
 	csvcut -d";" -c 1,3,2,4,5,6,8 $CSV | \
 		csvjson -L et_EE.utf8 --date-format "%d.%m.%Y" | \
 		jq '.[]|select(."Row type"==20)' | \
-		jq 'if ."Debit/Credit" == "D" then .Amount = (((.Amount*-1)|tonumber)*1000) else .Amount = ((.Amount|tonumber)*1000) end | 
-		.importId = (["YNAB",.Amount,.Date,"1"]|join(":")) | 
-		.["Memo"] = .Details |
-		.["Payee"] = ."Beneficiary/Payer" |
-		.["IBAN"] = ."Client account" |
-		del(."Row type",."Debit/Credit", ."Client account",.Details, ."Beneficiary/Payer")' | \
+		jq 'if ."Debit/Credit" == "D" then .Amount = (.Amount*-1) else .Amount = .Amount end|
+		del(."Row type",."Debit/Credit")|
+		.["Memo"] = .Details|
+		.["Payee"] = ."Beneficiary/Payer"|
+		.["Account"] = ."Client account"|
+		del(."Client account",.Details, ."Beneficiary/Payer")' | \
 		jq -c --slurp 
 }
 
@@ -108,6 +107,6 @@ importTransactions () {
 		echo '}'
 		) | jq . -c
 	}
-	#post_data
-	curl -X POST "https://api.youneedabudget.com/v1/budgets/$budgetId/transactions" -H  "accept: application/json" -H  "Authorization: Bearer $ynabToken" -H  "Content-Type: application/json" -d "$( post_data )"
+#	post_data
+curl -X POST "https://api.youneedabudget.com/v1/budgets/$budgetId/transactions" -H  "accept: application/json" -H  "Authorization: Bearer $ynabToken" -H  "Content-Type: application/json" -d "$( post_data )"
 }

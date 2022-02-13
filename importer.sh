@@ -8,6 +8,7 @@ source config
 source functions
 session=$( uuidgen )
 temp=/tmp/${session}
+OUTPUT=$outputFolder
 #
 # ARGS
 #
@@ -17,6 +18,7 @@ CSV=$2
 #
 # Init
 #
+testCSV
 mkdir -p $temp
 getAccounts > $temp/accounts.json
 
@@ -26,9 +28,12 @@ getAccounts > $temp/accounts.json
 case $MODE in
 	"lhv")
 		transactions=$( lhvRead $CSV )
-		importTransactions "$transactions"
+		importTransactions "$transactions" | jq .
+		lhvConvert $CSV
 		;;
 	"swedbank")
+		transactions=$( swedbankRead $CSV )
+		importTransactions "$transactions" | jq .
 		swedbankConvert $CSV
 		;;
 	*)
