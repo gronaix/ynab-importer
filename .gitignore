@@ -1,3 +1,5 @@
 *.swp
 config
 downloads
+/media/downloads
+
