@@ -21,7 +21,7 @@ This tool is targeted for manual import of bank account statements from the abov
 
 
 ```
-importer.sh [lhv] input.csv
+importer.sh [lhv|swedbank] input.csv
 ```
 This tool will read the CSV and automatically imports the transactions into the defined budget using the YNAB API.
 In order to have this tool working properly, following requirements need to fulfilled:
