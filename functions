@@ -30,7 +30,9 @@ importUsage () {
 
 
 swedbankConvert () {
-	filename="$( csvcut -c 1 -d";" $1 | head -n 2|tail -n1)_$(date "+%Y-%m-%d_%H-%M-%S").csv"
+	IBAN=$( csvcut -c 1 -d";" $CSV | head -n 2|tail -n1 )
+	prefix=$( getAccounts | jq '.[]|select(.name | contains("'$IBAN'"))|.name' -r|tr " " "_" )
+	filename="${prefix}_$(date "+%Y-%m-%d_%H-%M-%S").csv"
 	csvcut -d";" -c 3,2,4,5,6,8 $1 | \
 		csvjson -L et_EE.utf8 --date-format "%d.%m.%Y" | \
 		jq '.[]|select(."Row type"==20)' | \
@@ -58,13 +60,15 @@ swedbankRead () {
 }
 
 lhvConvert () {
-		filename="$( csvcut -c 1 -d"," $1 | head -n 2|tail -n1)_$(date "+%Y-%m-%d_%H-%M-%S").csv"
-		csvcut -d"," -c 3,5,9,12 $1 | \
-			csvformat -U 2 | \
-			csvjson | \
-			jq 'map(.Payee = ."Sender/receiver name" | 
-				.Memo = .Description | 
-				del(."Sender/receiver name", .Description))' | \
+	IBAN=$( echo $CSV | grep -Po 'EE\d{18}' )
+	prefix=$( getAccounts | jq '.[]|select(.name | contains("'$IBAN'"))|.name' -r|tr " " "_" )
+	filename="${prefix}_$(date "+%Y-%m-%d_%H-%M-%S").csv"
+	csvcut -d"," -c 3,5,9,12 $CSV | \
+		csvformat -U 2 | \
+		csvjson | \
+		jq 'map(.Payee = ."Sender/receiver name" | 
+			.Memo = .Description | 
+			del(."Sender/receiver name", .Description))' | \
 		in2csv -f json > $OUTPUT/$filename && echo "saved in $OUTPUT/$filename" && rm -v $CSV
 }
 
